@@ -1,0 +1,6 @@
+Chiikawa model
+Author: SPONg (https://sketchfab.com/thegageinator)
+Source: https://sketchfab.com/3d-models/chiikawa-459a5d250807446b9b355f2363e81a23
+License in original GLB metadata: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+Changes: converted the supplied GLB to FBX for Unity; scene instance scaled and positioned.
+Original model and texture supplied from the user's Godot prototype.
