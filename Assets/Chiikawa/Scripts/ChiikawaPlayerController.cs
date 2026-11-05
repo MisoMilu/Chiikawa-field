@@ -11,9 +11,10 @@ namespace ChiikawaField
         [SerializeField] private Transform visual;
         [SerializeField] private Transform viewCamera;
         [SerializeField] private InputActionAsset inputActions;
+        [SerializeField] private Animator animator;
 
         [Header("Movement (Unity units per second)")]
-        [SerializeField, Min(0f)] private float speed = 10f;
+        [SerializeField, Min(0f)] private float speed = 20f;
         [SerializeField, Min(0f)] private float turnSpeed = 10f;
         [SerializeField, Min(0f)] private float jumpVelocity = 7f;
         [SerializeField, Min(0.1f)] private float gravity = 14.715f;
@@ -23,6 +24,7 @@ namespace ChiikawaField
         private InputAction moveAction;
         private InputAction jumpAction;
         private float verticalVelocity;
+        private static readonly int IsRunning = Animator.StringToHash("IsRunning");
 
         private void Awake()
         {
@@ -56,6 +58,8 @@ namespace ChiikawaField
             moveAction = null;
             jumpAction = null;
             verticalVelocity = 0f;
+            if (animator != null)
+                animator.SetBool(IsRunning, false);
         }
 
         private void Update()
@@ -77,6 +81,15 @@ namespace ChiikawaField
 
             verticalVelocity -= gravity * Time.deltaTime;
             controller.Move((direction * speed + Vector3.up * verticalVelocity) * Time.deltaTime);
+
+            // Drive the in-place run from grounded movement; collisions and jumps stay physical.
+            if (animator != null)
+            {
+                Vector3 velocity = controller.velocity;
+                velocity.y = 0f;
+                animator.SetBool(IsRunning, controller.isGrounded &&
+                    direction.sqrMagnitude > 0.001f && velocity.sqrMagnitude > 0.01f);
+            }
 
             if (visual != null && direction.sqrMagnitude > 0.001f)
             {
